@@ -1,86 +1,102 @@
 <?php
   //Задача №1
-  //Выяснить является ли введенный год високосным. В диапазоне от 0 до 2021.
+  //Дан массив [33, 42, -7, -81, 11, -2, 21, 0, 5, 67]. По заданному пользователем индексу (должно быть числом) проверить существует ли данный элемент.
 
-/*
-  $year = readline("Insert a year ");
-  if ($year % 4 == 0){
-    echo $year . ' год - високосный.' . PHP_EOL;
+  //a) если нет, добавить элемент с введенным индексом и присвоить ему значение 0
+
+  //b) если существует, то проверить, если его значение отрицательное, перезаписать его как положительное. проверить, если оно положительное, вывести следующий за ним элемент
+
+  //c) если значение равно нулю, то переместить данный элемент в конец массива
+
+  //Вывести введенный индекс и итоговый массив на экран.
+
+/*  $arr = [33, 42, -7, -81, 11, -2, 21, 0, 5, 67];
+
+  $index = readline('Insert an index ');
+
+  if ($index >= 0 && is_numeric($index)) {
+
+    if (isset($arr[$index])) {
+      switch (true) {
+        case ($arr[$index] < 0):
+          $arr[$index] = abs($arr[$index]);
+          echo "Элемент массива под индексом {$index} преобразован из отрицательного числа в положительное, записан как {$arr[$index]}" . PHP_EOL;
+          break;
+        case ($arr[$index] == 0):
+          echo "Под индексом {$index} находился элемент со значением 0, он перемещен в конец массива." . PHP_EOL;
+          array_push($arr, 0);
+          unset($arr[$index]);
+          break;
+        default:
+          echo "Под индексом {$index} в массиве находится число {$arr[$index]}. Следующий элемент {$arr[$index+1]}" . PHP_EOL;
+          break;
+      }
+    } else {
+      $arr[$index] = 0;
+      echo "Под индексом {$index} элемента в массиве не было. Добавлен элемент под введеным индексом, ему присвоено значение 0" . PHP_EOL;
+    }
   } else {
-    echo $year . ' год - не является високосным.' . PHP_EOL;
+    echo "Введите целое число, которое равно или больше 0" . PHP_EOL;
   }
+
+  var_dump($arr);
 */
 
   //Задача №2
-  // Получить от пользователя 3 значения: сторона A, сторона B и угол альфа.
 
-  //a) проверить введенный угол, он должен быть в диапазоне от 1 до 90 градусов включительно. A и B целые числа больше нуля - стороны четырехугольника. если ввели неверные значения, вывести сообщение об этом
+  //Дан массив:
+  /*
+  [
+    'monday' => 'понедельник',
+    'tuesday' => 'вторник',
+    'wednesday' => 'среда',
+    'thursday' => 'четверг',
+    'friday' => 'пятница',
+    'saturday' => 'суббота'
+    'sunday' => 'воскресенье'
+  ]*/
 
-  //b) проверить является ли четырехугольник с введенными значениями квадратом или прямоугольником
+/*
+  $arr = [
+    'monday' => 'понедельник',
+    'tuesday' => 'вторник',
+    'wednesday' => 'среда',
+    'thursday' => 'четверг',
+    'friday' => 'пятница',
+    'saturday' => 'суббота',
+    'sunday' => 'воскресенье'
+  ];
+  
+  //a) сформировать 2 новых индексированных массива с днями на англ. и рус. языках
 
-  //c) проверить является ли четырехугольник с введенными значениями ромбом или параллелограммом.
+  $arr_en = array_keys($arr);
+  $arr_ru = array_values($arr);
 
+  //b) вывести оба массива в виде строк с разделителем ,
 
-/*  $a = (int) readline("Insert rectangle side A ");
-  $b = (int) readline("Insert rectangle side B ");
-  $angle_a = (int) readline("Insert an angle alpha ");
-
-  if ($a > 0 && $b > 0 && ($angle_a >= 1 && $angle_a <= 90)) {
-    if ($angle_a == 90) {
-      if ($a == $b) {
-        $s = $a * $a;
-        echo "Прямоугольник является квадратом с площадью {$s}." . PHP_EOL;
-      } else {
-        $s = $a * $b;
-        echo "Прямоугольник не является квадратом, его площадь {$s}." . PHP_EOL;
-      }
-    } else {
-      if ($a == $b) {
-        $s = ($a * $a) * sin(deg2rad($angle_a));
-        echo "Прямоугольник является ромбом с площадью {$s}." . PHP_EOL;
-      } else {
-        $s = $a * $b * sin(deg2rad($angle_a));
-        echo "Прямоугольник является параллелограммом, его площадь {$s}." . PHP_EOL;
-      }
-    }
-  } else {
-    echo "Введите целым числом стороны А и В прямоугольника, атакже угол Альфа в диапозоне от 1 до 90." . PHP_EOL;
-  }
+  echo 'Дни недели на английском языке: ' . implode(', ', $arr_en) . PHP_EOL;
+  echo 'Дни недели на русском языке: ' . implode(', ', $arr_ru) . PHP_EOL;
 */
 
-  //Задача №3
-  
-  
-  $text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel tempus <a href="http://localhost/1.jpg" class="btn">erat</a>. In sollicitudin <span class="dotted">nisl nisi</span>, in cursus erat pulvinar et. In <a href="https://wikipedia.org/2.png" class="btn">congue</a> eleifend accumsan."';
-  
-  //b) добавить класс btn-success к 1й ссылке, а ко 2й - btn-primary
-  
-  $second_btn_position = strripos($text, 'btn');
-  $text_with_btn = str_replace('btn', 'btn btn-success', substr($text, 0, $second_btn_position));
-  $text_with_btn .= str_replace('btn', 'btn btn-primary', substr($text, $second_btn_position));
-  
-  //c) заменить обе ссылки (href) на http://example.com/(файл) (имя файла оставить без изменений)
-  //a) добавить к обоим тегам <a> атрибут target="_blank"
+//Задание №3
 
-  $first_href = substr($text, 0, strpos($text, 'g"') + 2);//65-67 и 75-77 функция бы пригодилась :)
-  $first_href = substr($first_href, strpos($first_href, 'href="') + 6);
-  $file_name = substr(strrchr($first_href, "/"), 1);
+/*
+  $text = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec vel tempus erat. In sollicitudin nisl nisi, in cursus erat pulvinar et. In congue eleifend accumsan. Nam dictum, nibh a justo iaculis, at hendrerit dui condimentum. Nulla et malesuada elit. Etiam eu dolor et nulla lobortis lacinia malesuada quis lacus. Aliquam nec nibh porta, vehicula justo id, sodales eros. Nulla facilisi. Nulla quis dui volutpat, mattis massa ut, interdum nisl.';
 
-  
-  $second_href_position = strripos($text_with_btn, 'href');
-  $rest_text = substr($text_with_btn, $second_href_position);
-  
-  $new_text = str_replace($first_href, 'http://example.com/' . $file_name . ' target="_blank"', substr($text_with_btn, 0, $second_href_position));
-  
-  $second_href = substr($rest_text, 0, strpos($rest_text, 'g"') + 2);
-  $second_href = substr($second_href, strpos($second_href, 'href="') + 6);
-  $file_name = substr(strrchr($second_href, "/"), 1);
-  
-  
-  
-  $new_text .= str_replace($second_href, 'http://example.com/' . $file_name . ' target="_blank"', $rest_text);
+  //a) выяснить кол-во слов в тексте, если оно больше 50, вывести предупреждение о превышении данного лимита
+  $arr_text_words = explode(' ', $text);
 
-  //Распечатать результат на экране.
+  if (count($arr_text_words) > 50) {
+    echo "Текст превышает лимит в 50 слов. Количество слов " . count($arr_text_words) . PHP_EOL;
+  }
 
-  echo $new_text . PHP_EOL;
-  
+  //b) выяснить кол-во предложений в данном тексте и вывести на экран
+  $arr_text_sent = explode('.', $text);
+  echo "Количество предложений в тексте " . (count($arr_text_sent) - 1) . PHP_EOL;
+
+  //c) получить 5е предложение (Nam dictum ...), оно должно начинаться с маленькой буквы. удалить из него все точки, запятые и пробел в начале. пробелы между словами заменить на дефисы - и сформировать из этого предложения ссылку вида http://site.ru/news/(предложение). вывесит ссылку на экран.
+
+  $sentence = str_replace(' ', '-', str_replace(',', '', lcfirst(trim($arr_text_sent[4]))));
+  $link = 'http://site.ru/news/' . $sentence;
+  echo $link . PHP_EOL;
+*/
