@@ -1,51 +1,77 @@
 <?php
-include_once "includes/header.php";
-include_once "form_process.php";
 
-//1. Получать в скрипте методом GET (из адресной строки) параметр url с именем файла, который нужно подключить к странице. Например, адрес http://localhost/index.php?url=home должен подключить и вывести на страницу файл home.php, http://localhost/index.php?url=about подключит about.php и т.д. Реализовать структуру из 5ти файлов.
-//a) В index.php должна быть базовая HTML разметка (страница с тегами html, head, body), список ссылок на все существующие страницы (в выше указанном формате) и php код.
-?>
-  <ul>
-    <li><a href="?url=home">Home</a></li>
-    <li><a href="?url=catalog">Catalog</a></li>
-    <li><a href="?url=about">About</a></li>
-    <li><a href="?url=contacts">Contacts</a></li>
-  </ul>
+include_once "includes/functions.php";
+
+if (isset($_FILES['file']) && !empty($_FILES['file'])) {
+  $message = check_image($_FILES['file']);
   
-  <?php
-    //b) Если параметр url не передан, загружать файл home.php
-    $url = $_GET['url'] ?? 'home';
-    $path = mb_strtolower(trim($url)) . ".php";
-    
-    //c) Добавить проверку существования целевого файла, если его нет, подключить файл 404.php
-    if (file_exists($path)) {
-      include_once "$path";
+  if (empty($message)) {
+    $login = trim($_POST['login']);
+    if (isset($login) && !empty($login)) {
+      $img = '';
+
+      $dir = __DIR__ . "/avatars";
+  
+      if (!is_dir($dir)) {
+        mkdir($dir, 0777, true);
+      } 
+
+      $file_name = uniqid("{$_POST['login']}_") . "." . pathinfo($_FILES['file']['name'], PATHINFO_EXTENSION);
+      
+      $new_file = "{$dir}/{$file_name}";
+      
+      if($old_file = glob("{$dir}/{$login}_*")){
+
+        //Аватар у этого пользователя уже существует
+
+        if (check_extension($old_file[0], $_FILES['file']['name'])) {
+          move_uploaded_file($_FILES['file']['tmp_name'], $old_file[0]);
+          $message = "Расширение совпадает. Перезаписали содержимое аватара";
+          $img = pathinfo($old_file[0])['basename'];
+        } else {
+          unlink($old_file[0]);
+          move_uploaded_file($_FILES['file']['tmp_name'], $new_file);
+          $message = "Расширение не совпадает. Удалили старый, записали новый аватар";
+          $img = pathinfo($new_file)['basename'];
+        }
+      } else {
+        move_uploaded_file($_FILES['file']['tmp_name'], $new_file);
+        $message = "Благодарим! Ваш аватар создан";
+        $img = pathinfo($new_file)['basename'];
+      }
     } else {
-      include_once "404.php";
+      $message = "Необходимо указать логин";
     }
-    
-    
-    if (!isset($_GET['url']) && empty($_GET['url'])) : 
-      if ((isset($_GET['answer']))) echo "<h2 style=\"color: red;\">{$_GET['answer']}</h2>";
-    ?>
-
-      <form action="form_process.php" method="post">
-        <label for="login">Логин</label><br>
-        <input type="text" name="login" placeholder="Ваш логин" value="<?=$login?>">
-        <?php if ((isset($_GET['login']))) : ?>
-          <small style="color: red;"><?=$_GET['login'];?></small>
-        <?php endif; ?>
-        <br><br>
-        <label for="message">Сообщение</label><br>
-        <textarea name="message" cols="30" rows="10" placeholder="Ваше сообщение"><?=$message?></textarea>
-        <?php if ((isset($_GET['message']))): ?>
-          <small style="color: red;"><?=$_GET['message'];?></small>
-        <?php endif; ?>
-        <br><br>
-        <button type="submit">Отправить!</button>
-      </form>
-
-<?php endif;
-    
-include_once "includes/footer.php";
+  }
+} 
 ?>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+</head>
+<body>
+  <div class="container mt-4">
+    <div class="col-sm-3">
+      <form method="post" enctype="multipart/form-data">
+        <?php 
+          if (isset($message) && !empty($message)) echo "<small class=\"form-text text-muted\">{$message}</small>";
+          if (isset($img) && !empty($img)) echo "<img style=\"width: 200px;\" src=\"avatars/{$img}\">";
+        ?>
+        <div class="form-group">
+          <label for="login">Логин</label>
+          <input type="text" class="form-control" id="login" name="login" placeholder="Ваш логин">
+        </div><br>
+        <div class="form-group">
+          <input type="file" class="form-control" id="file" name="file">
+        </div><br>
+        <button type="submit" class="btn btn-primary">Отправить</button>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
